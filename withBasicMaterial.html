@@ -1,4 +1,4 @@
-<style>
+ <style>
 html, body {
    margin: 0;
    height: 100%;
@@ -14,34 +14,41 @@ html, body {
   import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/build/three.module.js';
 
 function main() {
-  const canvas = document.querySelector('#c');                   // Initialized canvas
-  const renderer = new THREE.WebGLRenderer({canvas});            // Initialized renderer
+  const canvas = document.querySelector('#c');
+  const renderer = new THREE.WebGLRenderer({canvas});
 
   const fov = 75;
   const aspect = 2;  // the canvas default
   const near = 0.1;
   const far = 5;
-  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);   // Initialized camera
+  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.z = 2;
 
-  const scene = new THREE.Scene();                                      // Initilized scene
+  const scene = new THREE.Scene();
 
+  // {
+  //   const near = 1;
+  //   const far = 2;
+  //   const color = 'lightblue';
+  //   scene.fog = new THREE.Fog(color, near, far);
+  //   scene.background = new THREE.Color(color);
+  // }
 
+  {
+    const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(-1, 2, 4);
+    scene.add(light);
+  }
 
-  
-  const color = 0xFFFFFF;
-  const intensity = 1;
-  const light = new THREE.DirectionalLight(color, intensity);
-  light.position.set(-1, 2, 4);
-  scene.add(light);                                                      // Added light to the scene
-
-  const boxWidth = 3;
+  const boxWidth = 1.5;
   const boxHeight = 1.5;
   const boxDepth = 0.01;
-  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);  //  Initilized a box geometry
+  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
   function makeInstance(geometry, color, x) {
-    const material = new THREE.MeshPhongMaterial({color});                // Given material to the box
+    const material = new THREE.MeshPhongMaterial({color});
 
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
@@ -52,9 +59,9 @@ function main() {
   }
 
   const cubes = [
-    makeInstance(geometry, 0x44aa88,  0),
+    makeInstance(geometry, 0x44FF88,  0),
   ];
-   
+
   function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
     const width = canvas.clientWidth;
@@ -74,17 +81,18 @@ function main() {
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
       camera.updateProjectionMatrix();
     }
-     
+
     cubes.forEach((cube, ndx) => {
-      const speed = 1 + ndx * .1;
+      const speed = 1 + ndx * 2.1;
       const rot = time * speed;
-      cube.rotation.x = 2.8 + rot*0.5;
-      cube.rotation.z = 0;
+      cube.rotation.z = -10.8 - rot*20;
+      cube.rotation.x = rot*2;
+      cube.rotation.y = rot*3;
     });
 
     renderer.render(scene, camera);
 
-    requestAnimationFrame(render);                                       // Calling render repetively
+    requestAnimationFrame(render);
   }
 
   requestAnimationFrame(render);
@@ -93,6 +101,7 @@ function main() {
 main();
 
 </script>
+
 
 <body>
   <canvas id="c"></canvas>
