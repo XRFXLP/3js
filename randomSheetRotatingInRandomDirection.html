@@ -1,0 +1,82 @@
+<style>
+html, body {
+   margin: 0;
+   height: 100%;
+}
+#c {
+   width: 100%;
+   height: 100%;
+   display: block;
+}
+</style>
+
+<script type="module">
+  import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/build/three.module.js';
+
+function main() {
+  const canvas = document.querySelector('#c');                   // Initialized canvas
+  const renderer = new THREE.WebGLRenderer({canvas});            // Initialized renderer
+
+  const fov = 75;
+  const aspect = 2;  // the canvas default
+  const near = 0.1;
+  const far = 5;
+  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);   // Initialized camera
+  camera.position.z = 2;
+
+  const scene = new THREE.Scene();                                      // Initilized scene
+
+
+
+  
+  const color = 0xFFFFFF;
+  const intensity = 1;
+  const light = new THREE.DirectionalLight(color, intensity);
+  light.position.set(-1, 2, 4);
+  scene.add(light);                                                      // Added light to the scene
+
+  const boxWidth = 3;
+  const boxHeight = 1.5;
+  const boxDepth = 0.01;
+  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);  //  Initilized a box geometry
+
+  function makeInstance(geometry, color, x) {
+    const material = new THREE.MeshPhongMaterial({color});                // Given material to the box
+
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    cube.position.x = x;
+
+    return cube;
+  }
+
+  const cubes = [
+    makeInstance(geometry, 0x44aa88,  0),
+  ];
+
+  function render(time) {
+    time *= 0.001;
+
+    cubes.forEach((cube, ndx) => {
+      const speed = 1 + ndx * .1;
+      const rot = time * speed;
+      cube.rotation.x = 2.8 + rot*0.5;
+      cube.rotation.z = 0;
+    });
+
+    renderer.render(scene, camera);
+
+    requestAnimationFrame(render);                                       // Calling render repetively
+  }
+
+  requestAnimationFrame(render);
+}
+
+main();
+
+</script>
+
+<body>
+  <canvas id="c"></canvas>
+</body>
